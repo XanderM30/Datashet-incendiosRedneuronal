@@ -13,8 +13,11 @@ DATASET_DIR = r"C:\Datashet incendios\dataset_final"
 BATCH_SIZE = 16
 IMG_SIZE = (224, 224)
 EPOCHS = 50
-MODEL_SAVE_PATH = r"C:\Datashet incendios\modelo_incendios_mejorado.h5"
-TFLITE_SAVE_PATH = r"C:\Datashet incendios\modelo_incendios_mejorado.tflite"
+MODEL_SAVE_PATH = r"C:\Datashet incendios\assets\models\modelo_incendios_mejorado.h5"
+TFLITE_SAVE_PATH = r"C:\Datashet incendios\assets\models\modelo_incendios.tflite"
+
+# Crear carpeta si no existe
+os.makedirs(os.path.dirname(MODEL_SAVE_PATH), exist_ok=True)
 
 # --- Generadores de datos con aumentos agresivos ---
 train_datagen = ImageDataGenerator(
@@ -112,7 +115,7 @@ print(f"\nTest Accuracy: {acc*100:.2f}%")
 model.save(MODEL_SAVE_PATH)
 print(f"\n✅ Modelo guardado en {MODEL_SAVE_PATH}")
 
-# --- Conversión a TFLite ---
+# --- Conversión a TFLite (sobrescribiendo si existe) ---
 converter = tf.lite.TFLiteConverter.from_keras_model(model)
 tflite_model = converter.convert()
 
@@ -120,3 +123,10 @@ with open(TFLITE_SAVE_PATH, "wb") as f:
     f.write(tflite_model)
 
 print(f"\n✅ Modelo TFLite guardado en {TFLITE_SAVE_PATH}")
+print("\nProceso completado.")
+print(" git add .")
+print(" git commit -m 'Modelo de incendios actualizado'")
+print(" git push origin main")
+print("\nRecuerda actualizar el modelo en la aplicación móvil si es necesario.")
+print("¡Gracias por usar este script!")
+print("👋😊")
