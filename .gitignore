@@ -1,0 +1,16 @@
+# Archivos de Python
+__pycache__/
+*.pyc
+*.pyo
+
+# TensorFlow / Keras
+*.h5
+*.tflite
+
+# Datos
+dataset_final/
+*.zip
+
+# Otros
+*.log
+*.tmp
