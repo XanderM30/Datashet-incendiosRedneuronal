@@ -140,6 +140,20 @@ version += 1
 # Guardar la nueva versión
 with open(VERSION_FILE, "w") as f:
     f.write(str(version))
+# --- Guardar clases en archivo ---
+CLASSES_FILE = os.path.join(os.path.dirname(TFLITE_SAVE_PATH), "classes.txt")
+
+# Ordenar por índice (MUY IMPORTANTE)
+sorted_classes = sorted(
+    train_generator.class_indices.items(),
+    key=lambda x: x[1]
+)
+
+with open(CLASSES_FILE, "w", encoding="utf-8") as f:
+    for class_name, index in sorted_classes:
+        f.write(f"{index}:{class_name}\n")
+
+print("\n📄 Clases guardadas en classes.txt")
 
 print(f"\n📄 Version.txt actualizado a la versión {version}")
 

@@ -1,0 +1,8 @@
+0:casa
+1:cocina
+2:forestal
+3:industrial
+4:natural
+5:rural
+6:urbano
+7:vehiculo
