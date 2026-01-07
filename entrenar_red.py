@@ -39,7 +39,7 @@ train_generator = train_datagen.flow_from_directory(
     os.path.join(DATASET_DIR, "train"),
     target_size=IMG_SIZE,
     batch_size=BATCH_SIZE,
-    class_mode='categorical'
+    class_mode='categorical'    
 )
 
 val_generator = val_datagen.flow_from_directory(
@@ -69,7 +69,7 @@ class_weights = dict(enumerate(weights))
 base_model = MobileNetV3Small(
     input_shape=IMG_SIZE + (3,),
     include_top=False,
-    weights='imagenet'
+    weights='imagenet'# cargar pesos preentrenados en ImageNet
 )
 
 # Congelar todas las capas primero
@@ -78,12 +78,12 @@ base_model.trainable = False
 # Descongelar últimas 20 capas para fine-tuning
 for layer in base_model.layers[-20:]:
     layer.trainable = True
-
+# Construcción del modelo completo
 model = models.Sequential([
     base_model,
     layers.GlobalAveragePooling2D(),
     layers.Dropout(0.3),
-    layers.Dense(num_classes, activation='softmax')
+    layers.Dense(num_classes, activation='softmax')# esto es para clasificación multiclase
 ])
 
 # --- Compilación con learning rate bajo para fine-tuning ---
@@ -121,12 +121,27 @@ tflite_model = converter.convert()
 
 with open(TFLITE_SAVE_PATH, "wb") as f:
     f.write(tflite_model)
+# --- Manejo de versión del modelo ---
+VERSION_FILE = os.path.join(os.path.dirname(TFLITE_SAVE_PATH), "Version.txt")
+
+# Leer la versión actual
+if os.path.exists(VERSION_FILE):
+    with open(VERSION_FILE, "r") as f:
+        try:
+            version = int(f.read().strip())
+        except:
+            version = 0
+else:
+    version = 0
+
+# Incrementar versión
+version += 1
+
+# Guardar la nueva versión
+with open(VERSION_FILE, "w") as f:
+    f.write(str(version))
+
+print(f"\n📄 Version.txt actualizado a la versión {version}")
 
 print(f"\n✅ Modelo TFLite guardado en {TFLITE_SAVE_PATH}")
 print("\nProceso completado.")
-print(" git add .")
-print(" git commit -m 'Modelo de incendios actualizado'")
-print(" git push origin main")
-print("\nRecuerda actualizar el modelo en la aplicación móvil si es necesario.")
-print("¡Gracias por usar este script!")
-print("👋😊")
